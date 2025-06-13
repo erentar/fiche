@@ -565,7 +565,7 @@ static void *handle_connection(void *args) {
     uint8_t* buffer = malloc(c->settings->buffer_len);
     memset(buffer, 0, c->settings->buffer_len);
 
-    const int r = recv(c->socket, buffer, sizeof(buffer), MSG_WAITALL);
+    const int r = recv(c->socket, buffer, c->settings->buffer_len, MSG_WAITALL);
     if (r <= 0) {
         print_error("No data received from the client!");
         print_separator();
