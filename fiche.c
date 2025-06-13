@@ -561,7 +561,8 @@ static void *handle_connection(void *args) {
     }
 
     // Create a buffer
-    uint8_t buffer[c->settings->buffer_len];
+    // uint8_t buffer[c->settings->buffer_len];
+    uint8_t* buffer = malloc(c->settings->buffer_len);
     memset(buffer, 0, c->settings->buffer_len);
 
     const int r = recv(c->socket, buffer, sizeof(buffer), MSG_WAITALL);
@@ -574,6 +575,7 @@ static void *handle_connection(void *args) {
 
         // Cleanup
         free(c);
+        free(buffer);
         pthread_exit(NULL);
 
         return 0;
@@ -614,9 +616,10 @@ static void *handle_connection(void *args) {
             print_separator();
 
             // Cleanup
+            close(c->socket);
             free(c);
             free(slug);
-            close(c->socket);
+            free(buffer);
             pthread_exit(NULL);
             return NULL;
         }
@@ -634,6 +637,7 @@ static void *handle_connection(void *args) {
 
         // Cleanup
         free(c);
+        free(buffer);
         pthread_exit(NULL);
         return NULL;
     }
@@ -649,6 +653,7 @@ static void *handle_connection(void *args) {
         // Cleanup
         free(c);
         free(slug);
+        free(buffer);
         pthread_exit(NULL);
         return NULL;
     }
@@ -678,6 +683,7 @@ static void *handle_connection(void *args) {
     // Perform cleanup of values used in this thread
     free(slug);
     free(c);
+    free(buffer);
 
     pthread_exit(NULL);
 
